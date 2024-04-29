@@ -8,12 +8,6 @@ import cartManagerDB from "../dao/cartManagerDB.js";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-/*
-AppId: 886614
-CliendID: Iv1.bed86f5eb77e2a1f
-ClientSecret: c995326c50e2389110648a8cbd647af55ac6884a
-*/
-
 const userManagerService = new userManagerDB();
 const cartManagerService = new cartManagerDB();
 
