@@ -42,7 +42,7 @@ const initializatePassport = () => {
           };
 
           const registeredUser = await userManagerService.registerUser(newUser);
-          const cart = await cartManagerService.addCart(registeredUser._id);
+          const cart = await cartManagerService.createCart(registeredUser._id);
           const result = await userManagerService.updateUser(
             registeredUser._id,
             cart._id
@@ -106,7 +106,9 @@ const initializatePassport = () => {
             const registeredUser = await userManagerService.registerUser(
               newUser
             );
-            const cart = await cartManagerService.addCart(registeredUser._id);
+            const cart = await cartManagerService.createCart(
+              registeredUser._id
+            );
             const result = await userManagerService.updateUser(
               registeredUser._id,
               cart._id
