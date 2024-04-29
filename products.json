@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "title": "Azucar",
+    "description": "Es dulce",
+    "code": "122ASD",
+    "price": "1000",
+    "status": true,
+    "stock": "100",
+    "category": "Comestibles",
+    "thumbnails": []
+  },
+  {
+    "id": 2,
+    "title": "Harina",
+    "description": "Es blanca",
+    "code": "ASD12",
+    "price": "800",
+    "status": true,
+    "stock": "150",
+    "category": "Comestibles",
+    "thumbnails": []
+  }
+]
