@@ -82,7 +82,7 @@ sessionRouter.get(
   }
 );
 
-sessionRouter.post("/logout", (req, res) => {
+sessionRouter.get("/logout", (req, res) => {
   req.session.destroy((error) => {
     res.redirect("/login");
   });

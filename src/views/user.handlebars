@@ -26,10 +26,11 @@
       class="user-image"
     />
     <div class="user-details">
-      <h1>{{user.firstName}} {{user.lastName}}</h1>
       <p>Email: {{user.email}}</p>
+      <h1>{{#if user.lastName}}{{user.firstName}}
+          {{user.lastName}}{{else}}{{user.firstName}}{{/if}}</h1>
       <div class="additional-info">
-        <h2>Age: {{user.age}}</h2>
+        <h2>{{#if user.age}}Age: {{user.age}}{{/if}}</h2>
         <h2>Role: {{user.role}}</h2>
       </div>
     </div>

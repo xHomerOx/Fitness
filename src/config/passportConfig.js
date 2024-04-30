@@ -92,17 +92,21 @@ const initializatePassport = () => {
         clientSecret: Secret_Id,
         callbackURL: "http://localhost:8080/api/session/githubcallback",
       },
-      async (accessToken, refreshToken, profile, done) => {
+      async (_accessToken, _refreshToken, profile, done) => {
         try {
           const user = await userModel.findOne({
-            username: profile._json.login,
+            email: profile._json.email,
           });
+          console.log(profile);
           if (!user) {
             const newUser = {
+              id: profile._id,
               username: profile._json.login,
-              name: profile._json.name,
-              password: "",
+              firstName: profile._json.name,
+              email: profile._json.email,
+              role: "usuario",
             };
+
             const registeredUser = await userManagerService.registerUser(
               newUser
             );
@@ -118,7 +122,7 @@ const initializatePassport = () => {
             done(null, user);
           }
         } catch (error) {
-          return done(error);
+          return done(null, user);
         }
       }
     )
