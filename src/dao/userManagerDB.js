@@ -1,4 +1,5 @@
 import { userModel } from "../dao/models/userModel.js";
+import { isValidPassword } from "../utils/functionUtil.js";
 
 export default class userManagerDB {
   async getUsers() {
@@ -15,9 +16,12 @@ export default class userManagerDB {
 
   async registerUser(user) {
     try {
-      if (user.email == "admin@fitness.com" && user.password == "admin12345") {
+      if (
+        user.email == "admin@fitness.com" &&
+        isValidPassword(user, "admin12345")
+      ) {
         const result = await userModel.create(user);
-        result.role = "admin";
+        result.role = "teacher";
         result.save();
         return result;
       }

@@ -18,6 +18,7 @@ function registerUser(event) {
     lastName: $("#lastName").value,
     email: $("#email").value,
     age: $("#age").value,
+    role: $("role").value,
     password: $("#password").value,
   };
 

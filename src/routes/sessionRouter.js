@@ -78,7 +78,7 @@ sessionRouter.get(
   passport.authenticate("github", { failureRedirect: "/login" }),
   (req, res) => {
     req.session.user = req.user;
-    res.redirect("/");
+    res.redirect("/user");
   }
 );
 

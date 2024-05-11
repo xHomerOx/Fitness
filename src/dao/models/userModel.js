@@ -17,6 +17,7 @@ const usersSchema = new mongoose.Schema({
   age: {
     type: Number,
     require: true,
+    min: 18,
   },
   password: {
     type: String,
@@ -24,7 +25,7 @@ const usersSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    default: "usuario",
+    default: "student",
   },
   cart: {
     type: mongoose.Schema.Types.ObjectId,
