@@ -28,45 +28,17 @@ const initializePassport = () => {
 
   passport.use(
     "register",
-    new JWTStrategy(
-      {
-        passReqToCallback: true,
-        usernameField: "email",
+    new JWTStrategy({
         jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-        secretOrKey: secretKey,
-      },
-      async (req, username, password, done) => {
-        const { firstName, lastName, email, age } = req.body;
+        secretOrKey: secretKey
+    }, async (jwt_payload, done) => {
         try {
-          const user = await userManagerService.findUserEmail(username);
-          if (user) {
-            console.log("User already exist");
-            return done(null, false);
-          }
-
-          const newUser = {
-            firstName,
-            lastName,
-            email,
-            age,
-            password: createHash(password),
-          };
-
-          const registeredUser = await userManagerService.registerUser(newUser);
-          const cart = await cartManagerService.createCart(registeredUser._id);
-          const result = await userManagerService.updateUser(
-            registeredUser._id,
-            cart._id
-          );
-
-          return done(null, result);
+            return done(null, jwt_payload);
         } catch (error) {
-          console.log(error.message);
-          return done(error.message);
+            return done(error)
         }
-      }
-    )
-  );
+    })
+)
 
   passport.use(
     "github",
