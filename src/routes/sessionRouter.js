@@ -12,8 +12,22 @@ sessionRouter.get("/users", async (req, res) => {
     res.send({ users: result });
   } catch (error) {
     console.error(error);
+    res.status(500).send({
+      status: "error",
+      message: "Internal Server Error",
+    });
   }
 });
+
+sessionRouter.get(
+  "/current",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    res.send({
+      user: req.user,
+    });
+  }
+);
 
 sessionRouter.post(
   "/register",
@@ -32,28 +46,17 @@ sessionRouter.get("/failRegister", (req, res) => {
   });
 });
 
-sessionRouter.post(
-  "/login",
-  passport.authenticate("login", { failureRedirect: "/api/session/failLogin" }),
-  (req, res) => {
-    if (!req.user) {
-      return res.send(401).send({
-        status: "error",
-        message: "Error login!",
-      });
-    }
-    req.session.user = {
-      _id: req.user._id,
-      firstName: req.user.firstName,
-      lastName: req.user.lastName,
-      email: req.user.email,
-      age: req.user.age,
-      role: req.user.role,
-    };
-
-    res.redirect("/login");
+sessionRouter.post("/login", (req, res) => {
+  const token = req.user.generateAuthToken();
+  if (!token) {
+    return res.status(401).send({
+      status: "error",
+      message: "Error login!",
+    });
   }
-);
+  res.cookie("auth", token, { maxAge: 60 * 60 * 1000, httpOnly: true });
+  res.redirect("/user");
+});
 
 sessionRouter.get("/failLogin", (req, res) => {
   res.status(400).send({
@@ -84,6 +87,7 @@ sessionRouter.get(
 
 sessionRouter.get("/logout", (req, res) => {
   req.session.destroy((error) => {
+    res.clearCookie("auth");
     res.redirect("/login");
   });
 });

@@ -1,6 +1,6 @@
 import passport from "passport";
 import GitHubStrategy from "passport-github2";
-import local from "passport-local";
+import jwt, { ExtractJwt } from "passport-jwt";
 import { userModel } from "../dao/models/userModel.js";
 import { createHash, isValidPassword } from "../utils/functionUtil.js";
 import userManagerDB from "../dao/userManagerDB.js";
@@ -11,21 +11,32 @@ dotenv.config();
 const userManagerService = new userManagerDB();
 const cartManagerService = new cartManagerDB();
 
-const localStrategy = local.Strategy;
-const initializatePassport = () => {
+const JWTStrategy = jwt.Strategy;
+
+const cookieExtractor = (req) => {
+  let token = null;
+  if (req && req.cookies) {
+    token = req.cookies.auth ?? null;
+  }
+  return token;
+};
+
+const initializePassport = () => {
   const Cliend_Id = process.env.CLIENT_ID;
   const Secret_Id = process.env.SECRET_ID;
+  const secretKey = process.env.SECRET_KEY;
 
   passport.use(
     "register",
-    new localStrategy(
+    new JWTStrategy(
       {
         passReqToCallback: true,
         usernameField: "email",
+        jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+        secretOrKey: secretKey,
       },
       async (req, username, password, done) => {
         const { firstName, lastName, email, age } = req.body;
-
         try {
           const user = await userManagerService.findUserEmail(username);
           if (user) {
@@ -58,33 +69,6 @@ const initializatePassport = () => {
   );
 
   passport.use(
-    "login",
-    new localStrategy(
-      {
-        usernameField: "email",
-      },
-      async (username, password, done) => {
-        try {
-          const user = await userManagerService.findUserEmail(username);
-          if (!user) {
-            console.log("User does not exist");
-            return done("User does not exist");
-          }
-
-          if (!isValidPassword(user, password)) {
-            return done(null, false);
-          }
-
-          return done(null, user);
-        } catch (error) {
-          console.log(error.message);
-          return done(error.message);
-        }
-      }
-    )
-  );
-
-  passport.use(
     "github",
     new GitHubStrategy(
       {
@@ -104,7 +88,7 @@ const initializatePassport = () => {
               username: profile._json.login,
               firstName: profile._json.name,
               email: profile._json.email,
-              role: "usuario",
+              role: "student",
             };
 
             const registeredUser = await userManagerService.registerUser(
@@ -136,4 +120,4 @@ const initializatePassport = () => {
   });
 };
 
-export default initializatePassport;
+export default initializePassport;
